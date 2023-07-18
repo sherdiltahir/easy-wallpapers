@@ -1,25 +1,14 @@
 import 'dart:async';
 
-import 'package:easy_ads_flutter/easy_ads_flutter.dart';
 import 'package:easy_wallpapers/easy_wallpapers.dart';
 import 'package:example/model/mock_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await EasyAds.instance.initialize(
-    const TestAdIdManager(),
-    fbiOSAdvertiserTrackingEnabled: true,
-    fbTestMode: true,
-    unityTestMode: true,
-    isAgeRestrictedUserForApplovin: false,
-    admobConfiguration: RequestConfiguration(
-        testDeviceIds: [], maxAdContentRating: MaxAdContentRating.pg),
-    adMobAdRequest:
-        const AdRequest(nonPersonalizedAds: false, keywords: <String>[]),
-  );
+  MobileAds.instance.initialize();
   runApp(const MyApp());
 }
 
@@ -49,7 +38,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    EasyAds.instance.loadAd();
   }
 
   @override
@@ -60,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           wallpaperUrls: data,
           title: 'Wallpapers',
           leadingTitle: 'Nice',
+          bannerId: "ca-app-pub-3940256099942544/6300978111",
           bgImage:
               'https://i.pinimg.com/564x/99/83/87/9983876e5771924849c55d19ee7fec5a.jpg',
           placementBuilder: _addPlacements,
@@ -69,22 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
           isCacheEnabled: true,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          EasyWallpaperApp.launchApp(
-            context,
-            wallpaperUrls: data,
-            title: 'Wallpapers',
-            bgImage:
-                'https://i.pinimg.com/564x/99/83/87/9983876e5771924849c55d19ee7fec5a.jpg',
-            placementBuilder: _addPlacements,
-            onTapEvent: _onTapEvent,
-            // onSetOrDownloadWallpaper: _downloadWallpaper,
-          );
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+
     );
   }
 
@@ -109,29 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<bool> _downloadWallpaper(BuildContext context) {
     final completer = Completer<bool>();
 
-    showRewardedAdAlertDialog(
-      context,
-      onWatchAd: () {
-        if (EasyAds.instance
-            .showAd(AdUnitType.rewarded, adNetwork: AdNetwork.unity)) {
-          _streamSubscription?.cancel();
-          _streamSubscription = EasyAds.instance.onEvent.listen((event) {
-            if (event.adUnitType == AdUnitType.rewarded) {
-              if (event.type == AdEventType.adDismissed ||
-                  event.type == AdEventType.earnedReward) {
-                _streamSubscription?.cancel();
-                completer.complete(true);
-              }
-            }
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('No ad available right now, please try later')));
-          completer.complete(false);
-        }
-      },
-      onClickNo: () => completer.complete(false),
-    );
+
     return completer.future;
   }
 

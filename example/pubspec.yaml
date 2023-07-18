@@ -10,9 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  easy_ads_flutter: ^2.3.0
   easy_wallpapers:
     path: ../
+  google_mobile_ads: ^2.4.0
 
 dev_dependencies:
   flutter_test:

@@ -4,9 +4,11 @@ import 'package:easy_wallpapers/src/utilities/network_manager.dart';
 import 'package:easy_wallpapers/src/wallpaper/components/category_builder.dart';
 import 'package:easy_wallpapers/src/wallpaper/components/wallpaper_listing.dart';
 import 'package:easy_wallpapers/src/widgets/background_widget.dart';
+import 'package:easy_wallpapers/src/widgets/banner_widget.dart';
 import 'package:easy_wallpapers/src/widgets/header_text.dart';
 import 'package:easy_wallpapers/src/widgets/spacing_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class WallpaperHomeScreen extends StatefulWidget {
   static const String routeName = "/WallpaperHomeScreen";
@@ -44,26 +46,33 @@ class _WallpaperHomeScreenState extends State<WallpaperHomeScreen> {
         elevation: 0,
       ),
       body: BlurBackgroundWidget(
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: MediaQuery.of(context).padding.top + 60),
-              Column(
-                children: [
-                  if (controller.placementBuilder != null)
-                    controller.placementBuilder!
-                        .call(context, WallpaperPlacement.wallpaperHomeTop),
-                  const VerticalSpacing(),
-                  if (controller.categories.length > 1)
-                    CategoryBuilder(controller.categories),
-                  _fetchTrendingWallpapers(controller),
-                ],
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).padding.top + 60),
+                    Column(
+                      children: [
+                        if (controller.placementBuilder != null)
+                          controller.placementBuilder!
+                              .call(context, WallpaperPlacement.wallpaperHomeTop),
+                        const VerticalSpacing(),
+                        if (controller.categories.length > 1)
+                          CategoryBuilder(controller.categories),
+                        _fetchTrendingWallpapers(controller),
+                      ],
+                    ),
+                    const VerticalSpacing(),
+                  ],
+                ),
               ),
-              const VerticalSpacing(),
-            ],
-          ),
+            ),
+            BannerWidget(adSize: AdSize.banner, bannerId: controller.admobBanner??"")
+          ],
         ),
       ),
     );

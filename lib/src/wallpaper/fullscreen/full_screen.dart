@@ -6,9 +6,11 @@ import 'package:easy_wallpapers/src/models/color_filter_data.dart';
 import 'package:easy_wallpapers/src/models/full_screen_arguments.dart';
 import 'package:easy_wallpapers/src/wallpaper/components/wallpaper_placeholder.dart';
 import 'package:easy_wallpapers/src/wallpaper/fullscreen/components/wallpaper_info.dart';
+import 'package:easy_wallpapers/src/widgets/banner_widget.dart';
 import 'package:easy_wallpapers/src/widgets/color_filter_preview_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'menu_buttons.dart';
 
@@ -40,69 +42,77 @@ class _FullScreenViewState extends State<FullScreenView> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       key: _scaffoldKey,
-      body: Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: RepaintBoundary(
-              key: _fullScreenGlobalKey,
-              child: PageView.builder(
-                itemCount: list.length,
-                onPageChanged: _onPageChanged,
-                controller: PageController(initialPage: selectedIndex),
-                itemBuilder: (context, position) {
-                  return CachedNetworkImage(
-                      filterQuality: FilterQuality.high,
-                      imageUrl: list[position],
-                      imageBuilder: (context, provider) {
-                        return ColorFiltered(
-                          colorFilter: ColorFilter.matrix(selected.matrix),
-                          child: Image(
-                            image: provider,
-                            fit: BoxFit.cover,
-                          ),
-                        );
+      body: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: RepaintBoundary(
+                    key: _fullScreenGlobalKey,
+                    child: PageView.builder(
+                      itemCount: list.length,
+                      onPageChanged: _onPageChanged,
+                      controller: PageController(initialPage: selectedIndex),
+                      itemBuilder: (context, position) {
+                        return CachedNetworkImage(
+                            filterQuality: FilterQuality.high,
+                            imageUrl: list[position],
+                            imageBuilder: (context, provider) {
+                              return ColorFiltered(
+                                colorFilter: ColorFilter.matrix(selected.matrix),
+                                child: Image(
+                                  image: provider,
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            },
+                            placeholder: (context, url) =>
+                                const WallpaperPlaceholder(),
+                            fit: BoxFit.cover);
                       },
-                      placeholder: (context, url) =>
-                          const WallpaperPlaceholder(),
-                      fit: BoxFit.cover);
-                },
-              ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  bottom: 120,
+                  left: 0,
+                  right: 0,
+                  top: MediaQuery.of(context).padding.top / 2 + 70,
+                  child: MenuButtons(widget.arguments, _fullScreenGlobalKey),
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).padding.top / 2 + 110,
+                  right: 20,
+                  child: FavouriteIcon(list[selectedIndex]),
+                ),
+                Positioned(
+                    top: MediaQuery.of(context).padding.top / 2 + 20,
+                    right: 20,
+                    child: _buildCrossIcon()),
+                Positioned(
+                  top: MediaQuery.of(context).padding.top / 2 + 65,
+                  right: 20,
+                  child: WallpaperInfo(list[selectedIndex]),
+                ),
+                Positioned(
+                  height: 100,
+                  bottom: 20,
+                  left: 0,
+                  right: 0,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) => ColorFilterPreviewItem(
+                        ColorFilterData.filters[index],
+                        onTap: onTapFilter),
+                    itemCount: ColorFilterData.filters.length,
+                  ),
+                ),
+              ],
             ),
           ),
-          Positioned.fill(
-            bottom: 120,
-            left: 0,
-            right: 0,
-            top: MediaQuery.of(context).padding.top / 2 + 70,
-            child: MenuButtons(widget.arguments, _fullScreenGlobalKey),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).padding.top / 2 + 110,
-            right: 20,
-            child: FavouriteIcon(list[selectedIndex]),
-          ),
-          Positioned(
-              top: MediaQuery.of(context).padding.top / 2 + 20,
-              right: 20,
-              child: _buildCrossIcon()),
-          Positioned(
-            top: MediaQuery.of(context).padding.top / 2 + 65,
-            right: 20,
-            child: WallpaperInfo(list[selectedIndex]),
-          ),
-          Positioned(
-            height: 100,
-            bottom: 20,
-            left: 0,
-            right: 0,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) => ColorFilterPreviewItem(
-                  ColorFilterData.filters[index],
-                  onTap: onTapFilter),
-              itemCount: ColorFilterData.filters.length,
-            ),
-          ),
+          BannerWidget(adSize: AdSize.banner, bannerId: EasyWallpaperController.of(context).admobBanner!)
+
         ],
       ),
     );

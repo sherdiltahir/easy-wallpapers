@@ -34,7 +34,7 @@ class EasyWallpaperApp extends StatelessWidget {
   /// If this [isTrendingEnabled = true], package gather all wallpapers
   /// automatically and create a new category called trending
   final bool isTrendingEnabled;
-
+  final String? bannerId;
   /// If [isCacheEnabled = true], package gather all wallpapers urls
   /// automatically from the shared preferences and get all wallpapers from the
   /// cache from url as cache key
@@ -42,6 +42,7 @@ class EasyWallpaperApp extends StatelessWidget {
 
   const EasyWallpaperApp({
     Key? key,
+    this.bannerId,
     required this.wallpaperUrls,
     required this.title,
     this.leadingTitle,
@@ -90,7 +91,7 @@ class EasyWallpaperApp extends StatelessWidget {
     return EasyWallpaperController(
       wallpaperUrls: savedWalls,
       leadingTitle: leadingTitle,
-      title: title,
+      title: title,admobBanner: bannerId,
       placementBuilder: placementBuilder,
       onTapEvent: onTapEvent,
       onSetOrDownloadWallpaper: onSetOrDownloadWallpaper,
@@ -149,7 +150,7 @@ class EasyWallpaperApp extends StatelessWidget {
     /// If this [isTrendingEnabled = true], package gather all wallpapers
     /// automatically and create a new category called trending
     final bool isTrendingEnabled = true,
-
+     final String? bannerId,
     /// If [isCacheEnabled = true], package gather all wallpapers urls
     /// automatically from the shared preferences and get all wallpapers from the
     /// cache from url as cache key
@@ -161,7 +162,7 @@ class EasyWallpaperApp extends StatelessWidget {
           builder: (context) => Scaffold(
             body: EasyWallpaperApp(
               leadingTitle: leadingTitle,
-              title: title,
+              title: title,bannerId: bannerId,
               bgImage: bgImage,
               wallpaperUrls: wallpaperUrls,
               placementBuilder: placementBuilder,

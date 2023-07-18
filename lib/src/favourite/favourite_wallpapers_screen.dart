@@ -1,8 +1,11 @@
+import 'package:easy_wallpapers/src/easy_wallpaper_controller.dart';
 import 'package:easy_wallpapers/src/utilities/prefs.dart';
 import 'package:easy_wallpapers/src/wallpaper/components/wallpaper_listing.dart';
 import 'package:easy_wallpapers/src/widgets/background_widget.dart';
+import 'package:easy_wallpapers/src/widgets/banner_widget.dart';
 import 'package:easy_wallpapers/src/widgets/spacing_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class FavoriteWallpapersScreen extends StatefulWidget {
   static const String routeName = "/FavoriteWallpapersScreen";
@@ -29,7 +32,13 @@ class _FavoriteWallpapersScreenState extends State<FavoriteWallpapersScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: _buildAppBar(),
-      body: BlurBackgroundWidget(child: _buildBody()),
+      body: BlurBackgroundWidget(child: Column(
+        children: [
+          Expanded(child: _buildBody()),
+          BannerWidget(adSize: AdSize.banner, bannerId: EasyWallpaperController.of(context).admobBanner!)
+
+        ],
+      )),
     );
   }
 
@@ -55,19 +64,23 @@ class _FavoriteWallpapersScreenState extends State<FavoriteWallpapersScreen> {
             .copyWith(color: Colors.white),
       ));
     }
-    return SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).padding.top + 60),
-            WallpaperListing(
-              favWallpapers,
-              _scrollController,
-              onPopFullScreen: onPopFullScreen,
-            ),
-            const VerticalSpacing(),
-          ],
-        ));
+    return Column(
+      children: [
+        SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).padding.top + 60),
+                WallpaperListing(
+                  favWallpapers,
+                  _scrollController,
+                  onPopFullScreen: onPopFullScreen,
+                ),
+                const VerticalSpacing(),
+              ],
+            )),
+      ],
+    );
   }
 
   void onPopFullScreen() {

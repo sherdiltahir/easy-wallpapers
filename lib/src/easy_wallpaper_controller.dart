@@ -1,12 +1,14 @@
 import 'package:easy_wallpapers/src/models/enums.dart';
 import 'package:easy_wallpapers/src/models/wallpaper_category.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 typedef PlacementBuilder = Widget Function(BuildContext, WallpaperPlacement);
 typedef EventActionCallback = void Function(BuildContext, WallpaperEventAction);
 
 class EasyWallpaperController extends InheritedWidget {
-  const EasyWallpaperController({
+  const EasyWallpaperController( {
+    this.admobBanner,
     super.key,
     this.leadingTitle,
     required this.title,
@@ -23,6 +25,7 @@ class EasyWallpaperController extends InheritedWidget {
 
   /// This [leadingTitle] will be added before main [title]
   final String? leadingTitle;
+  final String? admobBanner ;
 
   /// This is the main title text
   final String title;
