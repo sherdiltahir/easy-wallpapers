@@ -12,7 +12,7 @@ class HomeHeaderText extends StatelessWidget {
     final style = Theme.of(context)
         .textTheme
         .headlineSmall!
-        .copyWith(fontWeight: FontWeight.w700);
+        .copyWith(fontWeight: FontWeight.w700,color: Colors.black);
 
     return Row(
       children: [
@@ -27,8 +27,7 @@ class HomeHeaderText extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: ' $name',
-                    style: style.copyWith(
-                        color: Theme.of(context).secondaryHeaderColor),
+                    style: style,
                   ),
                 ],
               ),

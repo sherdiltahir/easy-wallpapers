@@ -30,41 +30,53 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     final controller = EasyWallpaperController.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Theme.of(context).secondaryHeaderColor),
-        title: HomeHeaderText(
-            leadingText: controller.leadingTitle, name: controller.title),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  if (controller.placementBuilder != null)
-                    controller.placementBuilder!
-                        .call(context, WallpaperPlacement.wallpaperCategoryTop),
-                  const VerticalSpacing(),
-                  _fetchTrendingWallpapers(context, widget.category),
-                  const VerticalSpacing(),
-                ],
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(
+        controller.bgImage!
+      ),fit: BoxFit.cover)),
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme:
+              IconThemeData(color: Colors.black),
+          title: HomeHeaderText(
+              leadingText: controller.leadingTitle, name: controller.title,),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    if (controller.placementBuilder != null)
+                      controller.placementBuilder!.call(
+                          context, WallpaperPlacement.wallpaperCategoryTop),
+                    const VerticalSpacing(),
+                    _fetchTrendingWallpapers(context, widget.category),
+                    const VerticalSpacing(),
+                  ],
+                ),
               ),
             ),
-          ),
-          BannerWidget(adSize: AdSize.banner, bannerId: EasyWallpaperController.of(context).admobBanner!)
-        ],
+            BannerWidget(
+                adSize: AdSize.banner,
+                bannerId: EasyWallpaperController.of(context).admobBanner!)
+          ],
+        ),
       ),
     );
   }
 
+  List myWallPaper = [];
   Widget _fetchTrendingWallpapers(BuildContext context, String category) {
     final wallpapers = NetworkManager.getWallpapersByCategory(
             category, EasyWallpaperController.of(context).wallpaperUrls) ??
         [];
+    myWallPaper = wallpapers;
     return WallpaperListing(wallpapers, _scrollController);
   }
 }
